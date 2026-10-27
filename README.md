@@ -88,3 +88,20 @@ Requirements: Node.js 22+, pnpm, npm, a MongoDB database, and a Supabase project
 The frontend runs at `http://localhost:3000`; the API defaults to `http://localhost:3001`. Swagger UI is at `http://localhost:3001/docs` and the OpenAPI JSON is at `http://localhost:3001/docs-json`.
 
 Do not commit populated `.env` files, Supabase secret keys, MongoDB credentials, or access tokens.
+
+## Run with Docker
+
+Requirements: Docker with the Compose plugin and a Supabase project. MongoDB 7.0 runs in a local container; Supabase still provides sign-in, Realtime, and file storage. MongoDB 7.0 is used for compatibility with Linux kernels 6.19–7.0.13, which MongoDB 8.0 currently refuses to start on.
+
+1. Copy `backend/.env.example` to `backend/.env` and `frontend/.env.example` to `frontend/.env`. Fill in the Supabase project URL, frontend publishable key, and backend server secret key. The JWT JWKS URL is usually `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json`.
+2. Start the stack from the repository root:
+
+   ```bash
+   docker compose up --build
+   ```
+
+3. Open `http://localhost:3000` and sign in through Supabase. The API is at `http://localhost:3001`; Swagger UI is at `http://localhost:3001/docs`.
+
+On first startup, the backend inserts six sample incidents into MongoDB. Seeding is idempotent: restarting the container preserves existing demo records and does not reset changes. MongoDB data persists in the `mongo-data` volume. Set `SEED_DEMO_DATA=false` in `.env` to disable seeding. Sample incidents have no attachments; create/upload those through the app so their files exist in Supabase Storage.
+
+The seed records use a placeholder creator ID, so they appear in the incident list for signed-in operators but do not represent a real Supabase account. Recreate the database volume with `docker compose down -v` only when you want to erase all local MongoDB data and seed from scratch.

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SEVERITIES, STATUSES, type IncidentStatus, type Severity } from '../schemas/incident.schema.js';
+import { IncidentSeverity } from '../../common/enums/incident-severity.enum.js';
+import { IncidentStatus } from '../../common/enums/incident-status.enum.js';
 
 export class HealthResponseDto {
   @ApiProperty({ example: 'ok' }) status!: string;
@@ -11,8 +12,8 @@ export class IncidentResponseDto {
   @ApiProperty({ example: '6ae0f08bf579ab93507f2d19' }) id!: string;
   @ApiProperty({ example: 'API latency is elevated' }) title!: string;
   @ApiProperty({ example: 'Requests are timing out in the payments service.' }) description!: string;
-  @ApiProperty({ enum: SEVERITIES, example: 'Critical' }) severity!: Severity;
-  @ApiProperty({ enum: STATUSES, example: 'In Progress' }) status!: IncidentStatus;
+  @ApiProperty({ enum: Object.values(IncidentSeverity), example: IncidentSeverity.Critical }) severity!: IncidentSeverity;
+  @ApiProperty({ enum: Object.values(IncidentStatus), example: IncidentStatus.InProgress }) status!: IncidentStatus;
   @ApiProperty({ nullable: true, example: '69491075-380c-4ad4-8447-a8cced7db91c' }) assignedUserId!: string | null;
   @ApiProperty({ example: '69491075-380c-4ad4-8447-a8cced7db91c' }) createdByUserId!: string;
   @ApiProperty({ nullable: true, type: String, format: 'date-time' }) resolvedAt!: string | null;
@@ -29,7 +30,7 @@ export class PaginatedIncidentsResponseDto {
 }
 
 export class IncidentAnalyticsResponseDto {
-  @ApiProperty({ type: 'object', additionalProperties: { type: 'integer' }, example: { Low: 2, Medium: 4, Critical: 1 } }) activeBySeverity!: Record<Severity, number>;
+  @ApiProperty({ type: 'object', additionalProperties: { type: 'integer' }, example: { Low: 2, Medium: 4, Critical: 1 } }) activeBySeverity!: Record<IncidentSeverity, number>;
   @ApiProperty({ nullable: true, example: 183000 }) averageResolutionTimeMs!: number | null;
   @ApiProperty({ example: 12 }) resolvedCount!: number;
 }

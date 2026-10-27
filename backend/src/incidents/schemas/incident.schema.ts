@@ -1,17 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { IncidentSeverity } from '../../common/enums/incident-severity.enum.js';
+import { IncidentStatus } from '../../common/enums/incident-status.enum.js';
 
 export type IncidentDocument = HydratedDocument<Incident>;
-export const SEVERITIES = ['Low', 'Medium', 'Critical'] as const;
-export const STATUSES = ['Open', 'In Progress', 'Resolved'] as const;
-export type Severity = (typeof SEVERITIES)[number];
-export type IncidentStatus = (typeof STATUSES)[number];
 
 @Schema({ timestamps: true, versionKey: false })
 export class Incident {
   @Prop({ required: true, trim: true, maxlength: 140 }) title!: string;
-  @Prop({ required: true, enum: SEVERITIES, type: String }) severity!: Severity;
-  @Prop({ required: true, enum: STATUSES, type: String, default: 'Open' }) status!: IncidentStatus;
+  @Prop({ required: true, enum: Object.values(IncidentSeverity), type: String }) severity!: IncidentSeverity;
+  @Prop({ required: true, enum: Object.values(IncidentStatus), type: String, default: IncidentStatus.Open }) status!: IncidentStatus;
   @Prop({ required: true, maxlength: 5000, default: '' }) description!: string;
   @Prop({ type: String, default: null, index: true }) assignedUserId!: string | null;
   @Prop({ required: true, type: String, index: true }) createdByUserId!: string;
