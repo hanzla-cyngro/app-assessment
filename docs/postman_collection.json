@@ -1,0 +1,167 @@
+{
+  "info": {
+    "name": "Real-Time Incident Command Center API",
+    "description": "NestJS API. Set accessToken to a valid Supabase access token. All endpoints except health require Bearer authentication.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "incidentId",
+      "value": ""
+    },
+    {
+      "key": "attachmentId",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health",
+        "auth": {
+          "type": "noauth"
+        }
+      }
+    },
+    {
+      "name": "List incidents",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/incidents?page=1&pageSize=10"
+      }
+    },
+    {
+      "name": "Create incident",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Investigate elevated API latency\",\n  \"description\": \"p95 latency increased after deployment\",\n  \"severity\": \"Medium\",\n  \"assignedUserId\": null\n}"
+        },
+        "url": "{{baseUrl}}/incidents"
+      }
+    },
+    {
+      "name": "Get incident",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/incidents/{{incidentId}}"
+      }
+    },
+    {
+      "name": "Update incident",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"severity\": \"Critical\"\n}"
+        },
+        "url": "{{baseUrl}}/incidents/{{incidentId}}"
+      }
+    },
+    {
+      "name": "Transition status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"In Progress\"\n}"
+        },
+        "url": "{{baseUrl}}/incidents/{{incidentId}}/status"
+      }
+    },
+    {
+      "name": "Analytics",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/incidents/analytics"
+      }
+    },
+    {
+      "name": "List attachments",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/incidents/{{incidentId}}/attachments"
+      }
+    },
+    {
+      "name": "Create upload URL",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"originalFilename\": \"evidence.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 1024\n}"
+        },
+        "url": "{{baseUrl}}/incidents/{{incidentId}}/attachments/upload-url"
+      }
+    },
+    {
+      "name": "Register attachment (after uploading object)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"originalFilename\": \"evidence.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 1024,\n  \"objectPath\": \"replace-with-upload-object-path\"\n}"
+        },
+        "url": "{{baseUrl}}/incidents/{{incidentId}}/attachments"
+      }
+    },
+    {
+      "name": "Signed read URL",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/incidents/{{incidentId}}/attachments/{{attachmentId}}/read-url"
+      }
+    }
+  ]
+}
