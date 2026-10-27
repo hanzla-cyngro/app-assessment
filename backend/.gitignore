@@ -1,0 +1,15 @@
+
+# NestJS Observe key pair
+.env
+
+# dependencies
+/node_modules/
+
+# compiled output
+/dist/
+
+# test output
+/coverage/
+
+# TypeScript incremental build metadata
+*.tsbuildinfo
